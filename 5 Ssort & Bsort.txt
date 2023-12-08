@@ -1,72 +1,59 @@
-def Selection_Sort(marks):
-  for i in range(len(marks)):
-      min_idx = i
-      for j in range(i + 1, len(marks)):
-          if marks[min_idx] > marks[j]:
-              min_idx = j
-      marks[i], marks[min_idx] = marks[min_idx], marks[i]
+def selection_sort(arr):
+    n = len(arr)
 
-  print("Marks of students after performing Selection Sort on the list : ")
-  for i in range(len(marks)):
-      print(marks[i])
+    for i in range(n - 1):
+        min_index = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_index]:
+                min_index = j
 
-def Bubble_Sort(marks):
-  n = len(marks)
+        # Swap the found minimum element with the first element
+        arr[i], arr[min_index] = arr[min_index], arr[i]
 
-  for i in range(n - 1):
-      for j in range(0, n - i - 1):
-          if marks[j] > marks[j + 1]:
-              marks[j], marks[j + 1] = marks[j + 1], marks[j]
+def bubble_sort(arr):
+    n = len(arr)
 
-  print("Marks of students after performing Bubble Sort on the list :")
-  for i in range(len(marks)):
-      print(marks[i])
+    for i in range(n - 1):
+        # Last i elements are already sorted, so we don't need to check them
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                # Swap if the element found is greater than the next element
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
-def top_five_marks(marks):
-  print("Top", min(5, len(marks)), "Marks are : ")
-  print(*sorted(marks, reverse=True)[:5], sep="\n")
+def display_top_scores(arr, top_n):
+    print(f"\nTop {top_n} Scores:")
+    for i in range(min(top_n, len(arr))):
+        print(f"{i + 1}. {arr[i]:.2f}%")
 
-marks = []
-n = int(input("Enter number of students whose marks are to be displayed : "))
-print("Enter marks for", n, "students (Press ENTER after every student's marks): ")
-for i in range(0, n):
-  ele = int(input())
-  marks.append(ele) 
+def main():
+    # Input the number of first-year percentages
+    num_percentages = int(input("Enter the number of first-year percentages: "))
 
-print("The marks of", n, "students are : ")
-print(marks)
+    # Input percentages from the user
+    percentages = []
+    for _ in range(num_percentages):
+        percentage = float(input("Enter a percentage: "))
+        percentages.append(percentage)
 
-flag = 1
-while flag == 1:
-  print("\n          MENU            ")
-  print("1. Selection Sort of the marks")
-  print("2. Bubble Sort of the marks")
-  print("3. Exit")
-  ch = int(input("\n\nEnter your choice : "))
+    # Sorting using Selection Sort
+    selection_sorted = percentages.copy()
+    selection_sort(selection_sorted)
 
-  if ch == 1:
-      Selection_Sort(marks)
-      a = input("\nDo you want to display top marks from the list (y/n) : ")
-      if a.lower() == 'y':
-          top_five_marks(marks)
-      else:
-          print("\nThanks for using this program!")
-          flag = 0
+    print("\nFirst-year percentages (Original):", percentages)
+    print("First-year percentages (Sorted using Selection Sort):", selection_sorted)
 
-  elif ch == 2:
-      Bubble_Sort(marks)
-      a = input("\nDo you want to display top five marks from the list (yes/no) : ")
-      if a.lower() == 'yes':
-          top_five_marks(marks)
-      else:
-          print("\nThanks for using this program!")
-          flag = 0
+    # Display top five scores after Selection Sort
+    display_top_scores(selection_sorted[::-1], 5)
 
-  elif ch == 3:
-      print("\nThanks for using this program!!")
-      flag = 0
+    # Sorting using Bubble Sort
+    bubble_sorted = percentages.copy()
+    bubble_sort(bubble_sorted)
 
-  else:
-      print("\nEnter a valid choice!!")
-      print("\nThanks for using this program!!")
-      flag = 0
+    print("\nFirst-year percentages (Sorted using Bubble Sort):", bubble_sorted)
+
+    # Display top five scores after Bubble Sort
+    display_top_scores(bubble_sorted[::-1], 5)
+
+if __name__ == "__main__":
+    main()
+
