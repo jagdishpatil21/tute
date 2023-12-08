@@ -1,0 +1,109 @@
+#include <iostream>
+using namespace std;
+
+class JobQueue {
+private:
+    struct Node {
+        int jobId;
+        Node* next;
+        Node(int id) : jobId(id), next(nullptr) {}
+    };
+
+    Node* front;
+    Node* rear;
+
+public:
+    JobQueue() : front(nullptr), rear(nullptr) {}
+
+    ~JobQueue() {
+        while (!isEmpty()) {
+            dequeue();
+        }
+    }
+
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    void enqueue(int jobId) {
+        Node* newNode = new Node(jobId);
+
+        if (isEmpty()) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+
+        cout << "Job " << jobId << " added to the queue.\n";
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Job queue is empty. Cannot dequeue.\n";
+            return;
+        }
+
+        Node* temp = front;
+        front = front->next;
+
+        cout << "Job " << temp->jobId << " removed from the queue.\n";
+        delete temp;
+
+        if (front == nullptr) {
+            rear = nullptr;  // If the queue becomes empty after dequeue
+        }
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "Job queue is empty.\n";
+            return;
+        }
+
+        cout << "Job Queue: ";
+        Node* current = front;
+        while (current != nullptr) {
+            cout << current->jobId << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    JobQueue jobQueue;
+
+    int choice;
+    do {
+        cout << "\nJob Queue Operations:\n";
+        cout << "1. Add Job\n";
+        cout << "2. Delete Job\n";
+        cout << "3. Display Job Queue\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                int jobId;
+                cout << "Enter the Job ID to add: ";
+                cin >> jobId;
+                jobQueue.enqueue(jobId);
+                break;
+            case 2:
+                jobQueue.dequeue();
+                break;
+            case 3:
+                jobQueue.display();
+                break;
+            case 4:
+                cout << "Exiting the program. Thank you!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 4);
+
+    return 0;
+}

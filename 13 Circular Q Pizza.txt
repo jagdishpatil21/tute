@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+class CircularQueue {
+private:
+    int front, rear, capacity;
+    int* queue;
+
+public:
+    CircularQueue(int size) {
+        capacity = size + 1;  // One extra space to differentiate between front and rear.
+        front = rear = 0;
+        queue = new int[capacity];
+    }
+
+    ~CircularQueue() {
+        delete[] queue;
+    }
+
+    bool isEmpty() {
+        return front == rear;
+    }
+
+    bool isFull() {
+        return (rear + 1) % capacity == front;
+    }
+
+    void enqueue(int order) {
+        if (isFull()) {
+            cout << "Sorry, the pizza parlor is currently full. Cannot accept more orders.\n";
+        } else {
+            rear = (rear + 1) % capacity;
+            queue[rear] = order;
+            cout << "Order " << order << " placed successfully!\n";
+        }
+    }
+
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "No orders to serve.\n";
+        } else {
+            front = (front + 1) % capacity;
+            cout << "Order " << queue[front] << " served.\n";
+        }
+    }
+};
+
+int main() {
+    int maxSize;
+    cout << "Enter the maximum number of orders the pizza parlor can accept: ";
+    cin >> maxSize;
+
+    CircularQueue pizzaParlor(maxSize);
+
+    int choice;
+    do {
+        cout << "\nPizza Parlor Simulation Menu:\n";
+        cout << "1. Place an order\n";
+        cout << "2. Serve an order\n";
+        cout << "3. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                int order;
+                cout << "Enter the order number: ";
+                cin >> order;
+                pizzaParlor.enqueue(order);
+                break;
+            case 2:
+                pizzaParlor.dequeue();
+                break;
+            case 3:
+                cout << "Exiting the simulation. Thank you!\n";
+                break;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    } while (choice != 3);
+
+    return 0;
+}

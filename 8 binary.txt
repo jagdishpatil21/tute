@@ -1,0 +1,126 @@
+  #include <iostream>
+  #include <string>
+
+  class Node {
+  public: 
+      char data;
+      Node* next;
+      Node* prev;
+
+      Node(char d) : data(d), next(nullptr), prev(nullptr) {}
+  };
+
+  class DoublyLinkedList {
+  private:
+      Node* head;
+      Node* tail;
+
+  public:
+      DoublyLinkedList() : head(nullptr), tail(nullptr) {}
+
+      void insertAtEnd(char data) {
+          Node* newNode = new Node(data);
+          if (head == nullptr) {
+              head = tail = newNode;
+          } else {
+              tail->next = newNode;
+              newNode->prev = tail;
+              tail = newNode;
+          }
+      }
+
+      void display() {
+          Node* current = head;
+          while (current != nullptr) {
+              std::cout << current->data;
+              current = current->next;
+          }
+          std::cout << std::endl;
+      }
+
+      void computeOnesComplement() {
+          Node* current = head;
+          while (current != nullptr) {
+              current->data = (current->data == '0') ? '1' : '0';
+              current = current->next;
+          }
+      }
+
+      void computeTwosComplement() {
+          computeOnesComplement();
+
+          Node* current = tail;
+          while (current != nullptr) {
+              if (current->data == '0') {
+                  current->data = '1';
+                  break;
+              } else {
+                  current->data = '0';
+                  current = current->prev;
+              }
+          }
+      }
+
+      static DoublyLinkedList addBinaryNumbers(DoublyLinkedList& num1, DoublyLinkedList& num2) {
+          DoublyLinkedList result;
+          int carry = 0;
+
+          Node* currentNum1 = num1.tail;
+          Node* currentNum2 = num2.tail;
+
+          while (currentNum1 != nullptr || currentNum2 != nullptr) {
+              int sum = carry + (currentNum1 ? (currentNum1->data - '0') : 0) +
+                        (currentNum2 ? (currentNum2->data - '0') : 0);
+
+              carry = sum / 2;
+              result.insertAtEnd((sum % 2) + '0');
+
+              if (currentNum1) currentNum1 = currentNum1->prev;
+              if (currentNum2) currentNum2 = currentNum2->prev;
+          }
+
+          if (carry > 0) {
+              result.insertAtEnd(carry + '0');
+          }
+
+          return result;
+      }
+  };
+
+  int main() {
+      DoublyLinkedList binaryNum1, binaryNum2;
+
+      std::string num1, num2;
+
+      std::cout << "Enter first binary number: ";
+      std::cin >> num1;
+      for (char digit : num1) {
+          binaryNum1.insertAtEnd(digit);
+      }
+
+      std::cout << "Enter second binary number: ";
+      std::cin >> num2;
+      for (char digit : num2) {
+          binaryNum2.insertAtEnd(digit);
+      }
+
+      std::cout << "Binary Number 1: ";
+      binaryNum1.display();
+
+      std::cout << "Binary Number 2: ";
+      binaryNum2.display();
+
+      binaryNum1.computeOnesComplement();
+      std::cout << "1's Complement of Binary Number 1: ";
+      binaryNum1.display();
+
+      binaryNum1.computeTwosComplement();
+      std::cout << "2's Complement of Binary Number 1: ";
+      binaryNum1.display();
+
+      DoublyLinkedList sum = DoublyLinkedList::addBinaryNumbers(binaryNum1, binaryNum2);
+      std::cout << "Sum of Binary Numbers: ";
+      sum.display();
+
+      return 0;
+  }

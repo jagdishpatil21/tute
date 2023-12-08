@@ -1,0 +1,256 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+class node {
+public:
+    string PRN;
+    string name;
+    node* next;
+};
+
+class pClub {
+public:
+    node* head, * last;
+    int count; // Moved count here to be a member of the class
+
+public:
+    pClub();
+    void add();
+    void display();
+    void reverse();
+    void addpre();
+    void addsec();
+    void remove();
+    void addAnotherList();
+    void mergeLists(pClub& otherList);
+};
+
+pClub::pClub() {
+    head = NULL;
+    last = NULL;
+    count = 0; // Initialize count in the constructor
+}
+
+void pClub::add() {
+    node* temp; // Declare temp locally
+    if (head == NULL) {
+        temp = new node;
+        cout << "\nEnter PRN of President: ";
+        cin >> temp->PRN;
+        cout << "\nEnter name of President: ";
+        cin >> temp->name;
+        temp->next = NULL;
+        head = temp;
+        temp = new node;
+        cout << "\nEnter PRN of Secretary: ";
+        cin >> temp->PRN;
+        cout << "\nEnter name of Secretary: ";
+        cin >> temp->name;
+        temp->next = NULL;
+        last = temp;
+        head->next = last;
+        count = 2;
+    } else {
+        node* temp1 = head;
+        while (temp1->next != last)
+            temp1 = temp1->next;
+        temp = new node;
+        cout << "\nEnter PRN of member: ";
+        cin >> temp->PRN;
+        cout << "\nEnter name of member: ";
+        cin >> temp->name;
+        temp->next = last;
+        temp1->next = temp;
+        count++;
+    }
+    cout << "\nYour List of Members: ";
+    display();
+}
+
+void pClub::display() {
+    if (count == 0) {
+        cout << "Add members in the first place!" << endl;
+        return;
+    }
+    cout << "\n";
+    node* temp = head; // Declare temp locally
+    while (temp != NULL) {
+        cout << temp->name << "\t" << temp->PRN << endl;
+        temp = temp->next;
+    }
+}
+
+void pClub::reverse() {
+    node* prev = NULL, * curr = head, * next1;
+    while (curr != NULL) {
+        next1 = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next1;
+    }
+    head = prev;
+    cout << "\nReversed List of Members: ";
+    display();
+}
+
+void pClub::remove() {
+    if (count == 0) {
+        cout << "Create a linked list first!" << endl;
+        return;
+    }
+    int pos;
+    cout << "Enter the position of node you want to delete: ";
+    cin >> pos;
+    if (pos < 1 || pos > count) {
+        cout << "Invalid Entry" << endl;
+        return;
+    }
+    node* temp = head; // Declare temp locally
+    if (pos == 1) {
+        head = head->next;
+        delete temp;
+    } else {
+        node* temp1; // Declare temp1 locally
+        for (int i = 1; i < pos - 1; i++)
+            temp = temp->next;
+        temp1 = temp->next;
+        temp->next = temp1->next;
+        if (pos == count) // Updating last pointer if secretary is deleted
+            last = temp;
+        delete temp1;
+    }
+    count--;
+    cout << "\nYour List of Members: ";
+    display();
+}
+
+void pClub::addpre() {
+    if (head == NULL) {
+        cout << "\n Create a club first then add president" << endl;
+    } else {
+        node* temp = new node; // Declare temp locally
+        cout << "\nEnter PRN of President: ";
+        cin >> temp->PRN;
+        cout << "\nEnter name of President: ";
+        cin >> temp->name;
+        temp->next = head;
+        head = temp;
+        count++;
+    }
+}
+
+void pClub::addsec() {
+    if (head == NULL) {
+        cout << "\n Create a club first then add secretary" << endl;
+    } else {
+        node* temp = new node; // Declare temp locally
+        cout << "\nEnter PRN of Secretary: ";
+        cin >> temp->PRN;
+        cout << "\nEnter name of Secretary: ";
+        cin >> temp->name;
+        temp->next = NULL;
+        last->next = temp;
+        last = temp;
+        count++;
+    }
+}
+
+void pClub::addAnotherList() {
+    node* temp;
+    cout << "\nCreating Another Club List\n";
+    while (true) {
+        temp = new node;
+        cout << "\nEnter PRN of member (or type 'exit' to stop): ";
+        cin >> temp->PRN;
+        if (temp->PRN == "exit") {
+            delete temp;
+            break;
+        }
+        cout << "\nEnter name of member: ";
+        cin >> temp->name;
+        temp->next = NULL;
+        if (head == NULL) {
+            head = temp;
+            last = temp;
+        } else {
+            last->next = temp;
+            last = temp;
+        }
+        count++;
+        cout << "\nCurrent List of Members: ";
+        display();
+    }
+}
+
+void pClub::mergeLists(pClub& otherList) {
+    if (this->last != NULL) {
+        this->last->next = otherList.head;
+        if (otherList.last != NULL) {
+            this->last = otherList.last;
+        }
+        this->count += otherList.count;
+    } else {
+        this->head = otherList.head;
+        this->last = otherList.last;
+        this->count = otherList.count;
+    }
+    otherList.head = NULL;
+    otherList.last = NULL;
+    otherList.count = 0;
+}
+
+int main() {
+    pClub P, P2;
+    int ch;
+    while (1) {
+        cout << "\n1. Create club / Add Members" << endl;
+        cout << "2. Display Members" << endl;
+        cout << "3. No. of Members" << endl;
+        cout << "4. Delete Member/president/Secretary" << endl;
+        cout << "5. Reverse List" << endl;
+        cout << "6. Add president in club" << endl;
+        cout << "7. Add Secretary in club" << endl;
+        cout << "8. Create Another Club List" << endl;
+        cout << "9. Merge Club Lists" << endl;
+        cout << "10. Exit" << endl;
+        cout << "Enter Choice: ";
+        cin >> ch;
+        switch (ch) {
+        case 1:
+            P.add();
+            break;
+        case 2:
+            P.display();
+            break;
+        case 3:
+            cout << "Total no. of members: " << P.count << endl;
+            break;
+        case 4:
+            P.remove();
+            break;
+        case 5:
+            P.reverse();
+            break;
+        case 6:
+            P.addpre();
+            break;
+        case 7:
+            P.addsec();
+            break;
+        case 8:
+            P2.addAnotherList();
+            break;
+        case 9:
+            P.mergeLists(P2);
+            break;
+        case 10:
+            exit(0);
+            break;
+        default:
+            cout << "\nInvalid choice";
+            break;
+        }
+    }
+    return 0;
+}
